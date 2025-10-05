@@ -2,21 +2,23 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>SpiralImage 2.0 User Manual | POV-Ray Object Collection</title>
+<title>SpiralImage 2.1-rc.1 User Manual | POV-Ray Object Collection (Proposed)</title>
 <link rel="stylesheet" type="text/css" href="spiralimage.css">
 </head>
 
 <body>
 
-<h1>SpiralImage 2.0 User&nbsp;Manual</h1>
+<h1>SpiralImage 2.1-rc.1 User&nbsp;Manual</h1>
 
 <h2>Abstract</h2>
 
 <p>
-<a href="spiralimage.jpg"><img class="demo" src="spiralimage_thumbnail.jpg" title="Larger demo image" alt="[Thumbnail which links to a larger demo image]"></a>
-SpiralImage is a library module proposed for the
+<a href="spiralimage.jpg" class="demo"><img src="spiralimage_thumbnail.jpg" title="Larger demo image" alt="[Thumbnail which links to a larger demo image]"></a>
+SpiralImage is a proposed library module for the
 <a href="https://www.povray.org/">Persistence of Vision Raytracer (POV-Ray)</a>
-<a href="http://lib.povray.org/">Object Collection</a> that creates an Archimedean spiral based on a pigment. This pigment can be of an image map.
+<a href="https://lib.povray.org/">Object Collection</a>
+that creates an Archimedean spiral based on a pigment.
+This pigment can be of an image map.
 
 <hr>
 
@@ -33,6 +35,7 @@ SpiralImage is a library module proposed for the
  <li><a href="#Macros">Macros</a>
   <ul>
    <li><a href="#SpiralImage">SpiralImage</a>
+   <li><a href="#SpImg_Decode_Gamma_p">SpImg_Decode_Gamma_p</a>
    <li><a href="#SpImg_Radius">SpImg_Radius</a>
    <li><a href="#SpImg_Scale_p">SpImg_Scale_p</a>
    <li><a href="#SpImg_Size_uv">SpImg_Size_uv</a>
@@ -78,9 +81,6 @@ SpiralImage is a library module proposed for the
   <th>File</th>
   <th>Description</th>
  </tr><tr>
-  <td><code>README<var>nnnnnn</var>.html</code></td>
-  <td>Important information about using the POV-Ray Object Collection</td>
- </tr><tr>
   <td><code>spiralimage_description.txt</code></td>
   <td>A brief description of SpiralImage</td>
  </tr><tr>
@@ -91,15 +91,13 @@ SpiralImage is a library module proposed for the
   <td>Prerequisites</td>
  </tr><tr>
   <td><code>spiralimage.css</code></td>
-  <td rowspan="3">Other administrative files</td>
- </tr><tr>
-  <td><code>cc-LGPL-a.png</code></td>
- </tr><tr>
-  <td><code>Version<var>nnnnnn</var>.js</code></td>
+  <td>Formatting for this user manual</td>
  </tr>
 </table>
 
-<p>The italicized <var>nnnnnn</var> in some of the file names represents the 6-digit number that is in the name of the <code>.zip</code> file as downloaded from <a href="http://lib.povray.org/">lib.povray.org</a>. If you downloaded this module from some other repository, the files <code>cc-LGPL-a.png</code>, <code>README<var>nnnnnn</var>.html</code>, and <code>Version<var>nnnnnn</var>.js</code> may not be present. Please see the <a href="https://web.archive.org/web/20120419111948/http://lib.povray.org/usersguide/02using.html">Object Collection User’s Guide</a> if <code>README<var>nnnnnn</var>.html</code> is not present.
+<p>Depending on where you obtained this library, there may be other administrative files included with this download,
+including one named <code>README<var>{series-of-digits}</var>.html</code> which contains important information about using the POV-Ray Object Collection.
+Please see the <a href="https://web.archive.org/web/20120419111948/http://lib.povray.org/usersguide/02using.html">Object Collection User Guide</a> if this file is not present.
 
 <p><a href="#toc">Table of contents</a><hr>
 
@@ -107,16 +105,28 @@ SpiralImage is a library module proposed for the
 
 <ul>
  <li>POV-Ray version 3.5 or later.
- <li><a href="http://lib.povray.org/searchcollection/index2.php?objectName=SphereSweep&amp;contributorTag=Cousin%20Ricky">SphereSweep</a>, also available from the Object Collection (<a href="https://github.com/CousinRicky/POV-SphereSweep" target="_blank">SphereSweep mirror</a>).
+ <li><a href="https://lib.povray.org/searchcollection/index2.php?objectName=SphereSweep&amp;contributorTag=Cousin%20Ricky" target="_blank">SphereSweep</a>,
+  available from the Object Collection
+  (<a href="https://github.com/CousinRicky/POV-SphereSweep" target="_blank">SphereSweep mirror</a>).
 </ul>
 
 <h3 id="Compliance">Namespace Compliance</h3>
 
-<p>All file names in this module and all global and local identifiers defined in <code>spiralimage.inc</code> comply fully with the <a href="https://news.povray.org/470b46cb%241%40news.povray.org">Object Collection naming standards</a>, as <a href="https://news.povray.org/48ba92e8%241%40news.povray.org">revised August 2008</a> and <a href="https://news.povray.org/povray.object-collection/thread/%3Cweb.5018a69dae7e89cb85de7b680%40news.povray.org%3E/">proposed August 2012</a>. The files in this module may be safely stored in the same folder as other fully compliant Object Collection modules.
+<p>All file names in this module and all global and local identifiers defined in <code>spiralimage.inc</code> comply fully with the 
+<a href="https://news.povray.org/470b46cb%241%40news.povray.org">Object Collection naming standards</a>, as 
+<a href="https://news.povray.org/48ba92e8%241%40news.povray.org">revised August 2008</a> and 
+<a href="https://news.povray.org/povray.object-collection/thread/%3Cweb.5018a69dae7e89cb85de7b680%40news.povray.org%3E/">proposed August 2012</a>.
+The files in this module may be safely stored in the same folder as other fully compliant Object Collection modules.
 
-<p>The reserved prefixes for this module are “<code>SpiralImage</code>” and “<code>SpImg</code>,” including any uppercase and lowercase variants. SpiralImage uses the Object Collection module SphereSweep, which reserves the prefixes “<code>SphereSweep</code>” and “<code>SSwp</code>,” including any uppercase and lowercase variants. To avoid conflicts, do not introduce into your scene description file any identifiers with any of these prefixes as names, or any identifiers that start with any of these prefixes plus an underscore.
+<p>The reserved prefixes for this module are “<code>SpiralImage</code>” and “<code>SpImg</code>,”
+including any uppercase and lowercase variants.
+SpiralImage uses the Object Collection module SphereSweep, which reserves the prefixes “<code>SphereSweep</code>” and “<code>SSwp</code>,”
+including any uppercase and lowercase variants.
+To avoid conflicts, do not introduce into your scene description file any identifiers with any of these prefixes as names, or any identifiers that start with any of these prefixes plus an underscore.
 
-<p>The standard include files <code>arrays.inc</code> and <code>functions.inc</code> are used by <code>spiralimage.inc</code>. In addition, SphereSweep uses  <code>shapes.inc</code>. The identifier <code>View_POV_Include_Stack</code> from the standard include file <code>debug.inc</code> is referenced by <code>spiralimage.inc</code>, although <code>debug.inc</code> itself is not used.
+<p>The standard include files <code>arrays.inc</code> and <code>functions.inc</code> are used by <code>spiralimage.inc</code>.
+In addition, SphereSweep uses  <code>shapes.inc</code>.
+The identifier <code>View_POV_Include_Stack</code> from the standard include file <code>debug.inc</code> is referenced by <code>spiralimage.inc</code>, although <code>debug.inc</code> itself is not used.
 
 <h3 id="Usage">Usage</h3>
 
@@ -133,7 +143,8 @@ SpiralImage is a library module proposed for the
 
 <p>Returns an Archimedean spiral object, with 1 POV unit between spirals.
 
-<p>Note: There is a small chance that you may get a “Reallocating” warning. This is only informational, and normally occurs only with an unusually small <code>Resolution</code> argument.
+<p>Note: There is a small chance that you may get a “Reallocating” warning.
+This is only informational, and normally occurs only with an unusually small <code>Resolution</code> argument.
 
 <h4>Arguments</h4>
 <p>Scalar arguments will be automatically promoted to colors or vectors where necessary.
@@ -143,11 +154,16 @@ SpiralImage is a library module proposed for the
  </tr><tr>
   <td><code>p_Image</code></td>
   <td>pigment</td>
-  <td>The pigment to be interpreted. Square &lt;0, 0, 0>...&lt;1, 1, 0> will be sampled, so a <code>pigment { image_map { <var>...</var> } }</code> can be used as is.</td>
+  <td>The pigment to be interpreted. Square &lt;0, 0, 0>...&lt;1, 1, 0> will be sampled,
+   so a <code>pigment { image_map { <var>...</var> } }</code> does not need to be scaled.
+  </td>
  </tr><tr>
   <td><code>uv_Size</code></td>
   <td>2-D vector</td>
-  <td>The dimensions of the final spiraled image in POV units. The smallest allowable size is &lt;1, 1>. Because the spiral circumscribes the rectangle, the final object will be larger than this; see macros <a href="#SpImg_Radius"><code>SpImg_Radius()</code></a> and <a href="#SpImg_Size_uv"><code>SpImg_Size_uv()</code></a></td>
+  <td>The dimensions of the final spiraled image in POV units. The smallest allowable size is &lt;1, 1>.
+   Because the spiral circumscribes the rectangle, the final object will be larger than this;
+   see macros <a href="#SpImg_Radius"><code>SpImg_Radius()</code></a> and <a href="#SpImg_Size_uv"><code>SpImg_Size_uv()</code></a>
+  </td>
  </tr><tr>
   <td><code>Stop</code></td>
   <td>float</td>
@@ -171,11 +187,15 @@ SpiralImage is a library module proposed for the
  </tr><tr>
   <td><code>c_Gray</code></td>
   <td>color</td>
-  <td>The gray scale function. See the <a href="#Gray">gray scale reference identifiers section</a> for some preset identifiers.</td>
+  <td>The gray scale function.
+   See the <a href="#Gray">gray scale reference identifiers section</a> for some preset identifiers.
+  </td>
  </tr><tr>
   <td><code>Method</code></td>
   <td>float</td>
-  <td>The type of object to be constructed. See the <a href="#Methods">method reference identifiers section</a> for the codes to use and their descriptions.</td>
+  <td>The type of object to be constructed.
+   See the <a href="#Methods">method reference identifiers section</a> for the codes to use and their descriptions.
+  </td>
  </tr><tr>
   <td><code>Resolution</code></td>
   <td>float</td>
@@ -185,9 +205,49 @@ SpiralImage is a library module proposed for the
 
 <p><a href="#toc">Table of contents</a><hr>
 
+<h3 id="SpImg_Decode_Gamma_p">SpImg_Decode_Gamma_p (Pigment, Gamma)</h3>
+
+<p><a href="https://blog.johnnovak.net/2016/09/21/what-every-coder-should-know-about-gamma/" target="_blank">Gamma</a>-decodes
+a pigment, and returns the decoded pigment.
+The original pigment is unchanged.
+This macro should be used on image maps of JPEG images with POV-Ray 3.5 or 3.6.
+It should not be necessary with PNG images or with POV-Ray 3.7 or later.
+
+<h4>Arguments</h4>
+<table>
+ <tr>
+  <th>Formal Parameter</th> <th>Type</th> <th>Description</th>
+ </tr><tr>
+  <td><code>Pigment</code></td>
+  <td>pigment</td>
+  <td>The pigment to be decoded.</td>
+ </tr><tr>
+  <td><code>Gamma</code></td>
+  <td>float</td>
+  <td>
+   <p>A positive number or a code for a special transfer function:
+   <dl>
+    <dt><code>SPIMG_SRGB_FN</code>
+    <dd>For <a href="https://en.wikipedia.org/wiki/SRGB#Transfer_function_(%22gamma%22)" target="_blank">sRGB decoding</a>,
+     this is appropriate for most modern digital images.
+    <dt>2.2
+    <dd>Similar to sRGB, this can be used for old images from most platforms.
+    <dt>1.8
+    <dd>This is appropriate for old Macintosh images.
+    <dt><code>SPIMG_BT709_FN</code>, <code>SPIMG_BT2020_FN</code>
+    <dd>These codes invoke the <a href="https://en.wikipedia.org/wiki/Rec._2020#Transfer_characteristics" target="_blank">BT.709/BT.2020 transfer function</a> used by HDTV.
+   </dl>
+  </td>
+ </tr>
+</table>
+
+<p><a href="#toc">Table of contents</a><hr>
+
 <h3 id="SpImg_Radius">SpImg_Radius (uv_Size)</h3>
 
-<p>Returns the radius of a circle that circumscribes a given rectangle. This may be used to estimate the size of the object returned by <code>SpiralImage()</code>, but note that any line thickness is not considered.
+<p>Returns the radius of a circle that circumscribes a given rectangle.
+This may be used to estimate the size of the object returned by <code>SpiralImage()</code>,
+but note that any line thickness is not considered.
 
 <h4>Argument</h4>
 <table>
@@ -204,7 +264,9 @@ SpiralImage is a library module proposed for the
 
 <h3 id="SpImg_Scale_p">SpImg_Scale_p (Pigment, Scale)</h3>
 
-<p>Scales a pigment around the square &lt;0, 0, 0>...&lt;1, 1, 0>, and returns the scaled pigment. The original pigment is unchanged. This macro can be used to zoom in to or out from the center of an image.
+<p>Scales a pigment around the square &lt;0, 0, 0>...&lt;1, 1, 0>, and returns the scaled pigment.
+The original pigment is unchanged.
+This macro can be used to zoom in to or out from the center of an image.
 
 <h4>Arguments</h4>
 <table>
@@ -225,7 +287,9 @@ SpiralImage is a library module proposed for the
 
 <h3 id="SpImg_Size_uv">SpImg_Size_uv (Radius, Aspect)</h3>
 
-<p>Returns a 2-D vector containing the dimensions of a rectangle that inscribes a given circle. Use this for the <code>uv_Size</code> argument to <code>SpiralImage()</code> if you desire a given size for the entire spiral. Note that any line thickness is not considered.
+<p>Returns a 2-D vector containing the dimensions of a rectangle that inscribes a given circle.
+Use this for the <code>uv_Size</code> argument to <code>SpiralImage()</code> if you desire a given size for the entire spiral.
+Note that any line thickness is not considered.
 
 <h4>Arguments</h4>
 <table>
@@ -253,12 +317,19 @@ SpiralImage is a library module proposed for the
  <tr>
   <td><code>SPIMG_GRAY</code></td>
   <td>float</td>
-  <td>The gray scale function used by POV-Ray’s <code>.gray</code> operator.</td>
+  <td>The gray scale function used by POV-Ray’s <code>.gray</code> operator,
+   best for scenes with <code>assumed_gamma srgb</code> or <code>assumed_gamma 2.2</code>,
+   or for POV-Ray 3.5 or 3.6 scenes with no <code>assumed_gamma</code> setting.
+  </td>
   <td>rgb &lt;0.297, 0.589, 0.114></td>
  </tr><tr>
   <td><code>SPIMG_SRGB</code></td>
   <td>float</td>
-  <td>The gray scale function for the sRGB color system.</td>
+  <td>The gray scale function for the
+   <a href="https://en.wikipedia.org/wiki/Rec._709#The_RGB_color_space" target="_blank">HDTV BT.709</a>
+   color system, appropriate for gamma-decoded
+   <a href="https://en.wikipedia.org/wiki/SRGB" target="_blank">sRGB</a> images.
+  </td>
   <td>rgb &lt;0.2126, 0.7152, 0.0722></td>
  </tr>
 </table>
@@ -270,21 +341,53 @@ SpiralImage is a library module proposed for the
  <tr>
   <td><code>SPIMG_APPROX</code></td>
   <td>float</td>
-  <td>A linear <code>sphere_sweep</code> object with many short segments. This method is best for objects that are part of a CSG difference or intersection. This is the fastest method for transparent spirals; but if rendering artifacts appear, <code>SPIMG_MERGE</code> should be used.</td>
+  <td>A linear <code>sphere_sweep</code> object with many short segments.
+   This method is best for objects that are part of a CSG difference or intersection.
+   This is the fastest method for transparent spirals;
+   but if rendering artifacts appear, <code>SPIMG_MERGE</code> should be used.
+  </td>
  </tr><tr>
   <td><code>SPIMG_MERGE</code></td>
   <td>float</td>
-  <td>A merge of spheres and cones. This method is good for transparent spirals, though <code>SPIMG_APPROX</code> is faster.</td>
+  <td>A merge of spheres and cones.
+   This method is good for transparent spirals, though <code>SPIMG_APPROX</code> is faster.
+  </td>
  </tr><tr>
   <td><code>SPIMG_SPHERE_SWEEP</code></td>
   <td>float</td>
-  <td>A cubic <code>sphere_sweep</code> object. This method is slow and prone to rendering artifacts.</td>
+  <td>A cubic <code>sphere_sweep</code> object.
+   This method is slow and prone to rendering artifacts.
+  </td>
  </tr><tr>
   <td><code>SPIMG_UNION</code></td>
   <td>float</td>
-  <td>A union of spheres and cones. This method is best for opaque objects that are not part of a CSG difference or intersection.</td>
+  <td>A union of spheres and cones.
+   This method is best for opaque objects that are not part of a CSG difference or intersection.
+  </td>
  </tr>
 </table>
+
+<h3 id="Nonlinear">Nonlinear Transfer Codes</h3>
+
+<table>
+ <tr><th>Identifier</th> <th>Type</th> <th>Description</th></tr>
+ <tr>
+  <td><code>SPIMG_BT709_FN</code></td>
+  <td>float</td>
+  <td>A special code for reading HDTV BT.709-encoded images.</td>
+ </tr><tr>
+  <td><code>SPIMG_BT2020_FN</code></td>
+  <td>float</td>
+  <td>A special code for reading HDTV BT.2020-encoded images.</td>
+ </tr><tr>
+  <td><code>SPIMG_SRGB_FN</code></td>
+  <td>float</td>
+  <td>A special code for reading sRGB-encoded images.</td>
+ </tr>
+</table>
+
+<p>Technical note: BT.709 and BT.2020 differ only in numerical precision.
+As SpiralImage exceeds the precision of both, this difference becomes moot.
 
 <h3 id="Reference">Miscellaneous Reference Identifier</h3>
 
@@ -293,23 +396,27 @@ SpiralImage is a library module proposed for the
  <tr>
   <td><code>SPIRALIMAGE_VERSION</code></td>
   <td>float</td>
-  <td>The SpiralImage version, in case the scene file needs that information.</td>
-  <td>2.0</td>
+  <td>The SpiralImage version.</td>
+  <td>2.1</td>
  </tr>
 </table>
 
 <h3>Internal Identifiers</h3>
 
-<p>Any identifiers in <code>spiralimage.inc</code> that are not documented in this User Manual are considered “private” and are subject to change or elimination in a future update.
+<p>Any identifiers in <code>spiralimage.inc</code> that are not documented in this User Manual are considered “private”
+and are subject to change or elimination in a future update.
 
 <p><a href="#toc">Table of contents</a><hr>
 
 <h2 id="About">About SpiralImage</h2>
 
 <address>
- <p>Copyright © 2022 Richard Callwood III. Some rights reserved.
- <p>This library is free software; you can redistribute it and/or modify it under the terms of the <a href="https://www.gnu.org/licenses/old-licenses/lgpl-2.1.html">GNU Lesser General Public License version 2.1</a> as published by the Free Software Foundation.
- <p>This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ <p>Copyright © 2022, 2025 Richard Callwood III. Some rights reserved.
+ <p>This library is free software: you can redistribute it and/or modify it under the terms of the
+ <a href="https://www.gnu.org/licenses/lgpl-3.0.html" target="_blank">GNU Lesser General Public License</a>
+ as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ <p>This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 </address>
 
 <h3 id="Categories">Object Collection Categories</h3>
@@ -327,6 +434,7 @@ SpiralImage is a library module proposed for the
     </ul>
    <li>Pigments
    <li>Macros
+   <li>Splines (indirectly, via SphereSweep)
   </ul>
 </ul>
 
@@ -349,7 +457,16 @@ SpiralImage is a library module proposed for the
    <ul>
     <li>Macros for calculating the dimensions of a spiral or its inscribed rectangle are added.
     <li>The <code>Quality</code> argument is changed to <code>Resolution</code>, and has the same function across all methods. A large <code>Resolution</code> actually increases the number of samples, rather than interpolating, as version 1.0 did.
-    <li>The module is uploaded to GitHub. Formal submission to the Object Collection is expected at a later date.
+    <li>The module is uploaded to GitHub.
+   </ul>
+  </td>
+ </tr><tr>
+  <td>2.1</td>
+  <td>2025 October 4</td>
+  <td>
+   <ul>
+    <li>Pigment gamma decoding is added.
+    <li>The license is upgraded to version 3 of the LGPL.
    </ul>
   </td>
  </tr>
@@ -360,6 +477,8 @@ SpiralImage is a library module proposed for the
 <ul>
  <li><a href="https://news.povray.org/povray.binaries.images/thread/%3C61fa68da%40news.povray.org%3E/">Thread in povray.binaries.images.</a>
  <li><a href="https://publicdomainreview.org/collection/mellan-sudarium-of-saint-veronica" target="_blank">Claude Mellan’s <cite>The Sudarium of Saint Veronica</cite> (1649) (<cite>The Public Domain Review</cite>)</a>
+ <li><a href="https://lib.povray.org/searchcollection/index2.php?objectName=SpiralImage&amp;contributorTag=Cousin%20Ricky">Official SpiralImage repository</a> and <a href="https://github.com/CousinRicky/POV-SpiralImage">GitHub mirror</a>
+ <li><a href="https://news.povray.org/povray.object-collection/">Object Collection discussion</a>
 </ul>
 
 <p><a href="#toc">Table of contents</a>

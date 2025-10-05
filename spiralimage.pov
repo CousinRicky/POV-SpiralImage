@@ -1,23 +1,23 @@
-/* spiralimage.pov version 2.0
+/* spiralimage.pov version 2.1-rc.1
  * Persistence of Vision Raytracer scene description file
  * A proposed POV-Ray Object Collection demo
  *
  * Demo scene using spiralimage.inc: an Archimedean spiral impression of an
  * image map.
  *
- * Copyright © 2022 Richard Callwood III.  Some rights reserved.
- * This file is licensed under the terms of the CC-LGPL
- * a.k.a. the GNU Lesser General Public License version 2.1.
+ * Copyright © 2022, 2025 Richard Callwood III.  Some rights reserved.
+ * This file is licensed under the terms of the GNU-LGPL.
  *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License version 2.1 as published by the Free Software Foundation.
+ * This library is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  Please
- * visit https://www.gnu.org/licenses/old-licenses/lgpl-2.1.html for
- * the text of the GNU Lesser General Public License version 2.1.
+ * visit https://www.gnu.org/licenses/lgpl-3.0.html for the text
+ * of the GNU Lesser General Public License version 3.
  *
  * Vers  Date         Notes
  * ----  ----         -----
@@ -25,6 +25,8 @@
  *       2022-Feb-09  The spiral outside the image map is darkened.
  *       2022-Feb-13  Macro SpImg_Size_uv() is demoed.
  * 2.0   2022-Feb-13  An RGB color mode is added.
+ *       2025-Jan-02  The image map is gamma decoded for #version < 3.7.
+ * 2.1   2025-Oct-04  The license is upgraded to LGPL 3.
  */
 // +W800 +H600 +A +R5 +FJ
 // +W800 +H600 +A0.0 +R5 -J Declare=Color=1 +Ospiralimage_color
@@ -48,6 +50,8 @@ camera
   up Size * image_height / image_width * y
 }
 
+#declare P = pigment { image_map { jpeg "spiralimage_sample" interpolate 2 } }
+
 #if (Color)
 
   #include "colors.inc"
@@ -57,7 +61,9 @@ camera
     #local C = color (CHSV2RGB (<Hue, 1, 1>));
     object
     { SpiralImage
-      ( pigment { image_map { jpeg "spiralimage_sample" interpolate 2 } },
+      ( #if (version < 3.7) SpImg_Decode_Gamma_p (P, SPIMG_SRGB_FN),
+        #else P,
+        #end
         SpImg_Size_uv (Radius, 4/3), Hue, 1, 1/3, 1/30, 1/6, C,
         SPIMG_UNION, 5
       )
@@ -72,7 +78,9 @@ camera
 
   object
   { SpiralImage
-    ( pigment { image_map { jpeg "spiralimage_sample" interpolate 2 } },
+    ( #if (version < 3.7) SpImg_Decode_Gamma_p (P, SPIMG_SRGB_FN),
+      #else P,
+      #end
       SpImg_Size_uv (Radius, 4/3), -135, -1, 0.1, 0.9, 0.4, SPIMG_SRGB,
       SPIMG_UNION, 5
     )

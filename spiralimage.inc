@@ -1,4 +1,4 @@
-/* spiralimage.inc version 2.0
+/* spiralimage.inc version 2.1-rc.1
  * Persistence of Vision Raytracer include file
  * A proposed POV-Ray Object Collection module
  *
@@ -7,19 +7,19 @@
  *
  * Prerequisite: SphereSweep from the POV-Ray Object Collection
  *
- * Copyright © 2022 Richard Callwood III.  Some rights reserved.
- * This file is licensed under the terms of the CC-LGPL
- * a.k.a. the GNU Lesser General Public License version 2.1.
+ * Copyright © 2022, 2025 Richard Callwood III.  Some rights reserved.
+ * This file is licensed under the terms of the GNU-LGPL.
  *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License version 2.1 as published by the Free Software Foundation.
+ * This library is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  Please
- * visit https://www.gnu.org/licenses/old-licenses/lgpl-2.1.html for
- * the text of the GNU Lesser General Public License version 2.1.
+ * visit https://www.gnu.org/licenses/lgpl-3.0.html for the text
+ * of the GNU Lesser General Public License version 3.
  *
  * Vers  Date         Notes
  * ----  ----         -----
@@ -34,6 +34,8 @@
  *                    methods.
  * 2.0   2022-Feb-13  The array size is better estimated from the spiral size
  *                    and resolution; and overflow is dealt with.
+ *       2025-Jan-07  Pigment gamma decoding is added.
+ * 2.1   2025-Oct-04  The license is upgraded to LGPL 3.
  *
  * Implementation note: due to POV-Ray namespace scope leakage, local variables
  * and function parameters (other than x, y, and z) *must* be prefixed.
@@ -41,9 +43,9 @@
 #ifndef (SpiralImage_Inc_Temp) #declare SpiralImage_Inc_Temp = version;
 #version max (3.5, min (3.8, version));
 
-#declare SPIRALIMAGE_VERSION = 2.0;
+#declare SPIRALIMAGE_VERSION = 2.1;
 #ifdef (View_POV_Include_Stack)
-  #debug "#include \"spiralimage.inc\" //version 2.0\n"
+  #debug "#include \"spiralimage.inc\" //version 2.1-rc.1\n"
 #end
 
 #include "arrays.inc"
@@ -58,16 +60,34 @@
 #declare SPIMG_MERGE = 3;
 #declare SPIMG_SRGB = rgb <0.2126, 0.7152, 0.0722>;
 #declare SPIMG_GRAY = rgb <0.297, 0.589, 0.114>;
+#declare SPIMG_SRGB_FN = -999;
+#declare SPIMG_BT2020_FN = 2020;
+#declare SPIMG_BT709_FN = 709;
 
-//============================= PRIVATE FEATURE ================================
-// This tool is not intended be referenced directly by the user.
+//============================= PRIVATE FEATURES ===============================
+// These tools are not intended be referenced directly by the user.
 
 // x = radius, y = resolution, z = Boolean: is it cubic?
 #declare SpImg__fn_Move = function
 { degrees (min (1 / (x * y), pi / select (z, 6, 18, 6)))
 }
 
-//============================== PUBLIC MACROS =================================
+#declare SpImg__fn_sRGB = function (x)
+{ select (x - 0.04045, x / 12.92, pow ((x + 0.055) / 1.055, 2.4))
+}
+
+#local SPIMG_2020B = 0.018053968510807;
+#local SPIMG_2020A = 1 + 5.5 * SPIMG_2020B;
+#local SPIMG_2020X = SPIMG_2020A * pow (SPIMG_2020B, 0.45) - SPIMG_2020A + 1;
+#declare SpImg__fn_BT2020 = function (x)
+{ select
+  ( x - SPIMG_2020X,
+    x / 4.5,
+    pow ((x + SPIMG_2020A - 1) / SPIMG_2020A, 1 / 0.45)
+  )
+}
+
+//============================= PUBLIC FEATURES ================================
 
 #macro SpiralImage
 ( p_Image, uv_Size, Stop, Direction, Thinnest, Thickest, Frame, c_Gray,
@@ -190,6 +210,73 @@
       #error
         concat (spimg_This, "(): unknown Method ", str (Method, 0, 4), ".")
   #end
+#end
+
+//--------------------------------------
+
+#macro SpImg_Decode_Gamma_p (Pigment, Gamma)
+  #switch (Gamma)
+    #case (SPIMG_SRGB_FN)
+    #case (SPIMG_BT709_FN)
+    #case (SPIMG_BT2020_FN)
+      #break
+    #else
+      #if (Gamma <= 0)
+        #error concat
+        ( "SpImg_Decode_Gamma_p(): Invalid Gamma ", str (Gamma, 0, 3), "."
+        )
+      #end
+  #end
+  #local SpImg_fn_P = function { pigment { Pigment } }
+  pigment
+  { average pigment_map
+    { [ function
+        { #switch (Gamma)
+            #case (SPIMG_SRGB_FN)
+              SpImg__fn_sRGB (SpImg_fn_P (x, y, z).red)
+              #break
+            #case (SPIMG_BT709_FN)
+            #case (SPIMG_BT2020_FN)
+              SpImg__fn_BT2020 (SpImg_fn_P (x, y, z).red)
+              #break
+            #else
+              pow (SpImg_fn_P (x, y, z).red, Gamma)
+          #end
+        }
+        color_map { [0 rgb 0] [1 red 3] }
+      ]
+      [ function
+        { #switch (Gamma)
+            #case (SPIMG_SRGB_FN)
+              SpImg__fn_sRGB (SpImg_fn_P (x, y, z).green)
+              #break
+            #case (SPIMG_BT709_FN)
+            #case (SPIMG_BT2020_FN)
+              SpImg__fn_BT2020 (SpImg_fn_P (x, y, z).green)
+              #break
+            #else
+              pow (SpImg_fn_P (x, y, z).green, Gamma)
+          #end
+        }
+        color_map { [0 rgb 0] [1 green 3] }
+      ]
+      [ function
+        { #switch (Gamma)
+            #case (SPIMG_SRGB_FN)
+              SpImg__fn_sRGB (SpImg_fn_P (x, y, z).blue)
+              #break
+            #case (SPIMG_BT709_FN)
+            #case (SPIMG_BT2020_FN)
+              SpImg__fn_BT2020 (SpImg_fn_P (x, y, z).blue)
+              #break
+            #else
+              pow (SpImg_fn_P (x, y, z).blue, Gamma)
+          #end
+        }
+        color_map { [0 rgb 0] [1 blue 3] }
+      ]
+    }
+  }
 #end
 
 //--------------------------------------

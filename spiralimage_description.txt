@@ -1,1 +1,3 @@
 An Archimedean spiral impression of a pigment. This can be used for spiral interpretations of image maps.
+
+In SpiralImage 2.1, gamma decoding is made available for older versions of POV-Ray.
